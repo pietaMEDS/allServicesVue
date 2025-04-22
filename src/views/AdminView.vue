@@ -175,10 +175,15 @@ const updateCategory = async () => {
     await fetch(`${useDevStore().apiHost}/categories/${categoryData.value.id}`, {
       method: 'PUT',
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: `Bearer ${useAuthStore().token}`,
       },
-      body: JSON.stringify(categoryData.value),
+      body: JSON.stringify({
+        name: categoryData.value.name,
+        description: categoryData.value.description,
+        priority: categoryData.value.priority,
+      }),
     })
     await fetchCategories()
     isNewCategory.value = false
@@ -197,6 +202,7 @@ const deleteCategory = async () => {
       },
     })
     await fetchCategories()
+    await fetchProducts()
     isDeleteFormOpen.value = false
     deleteData.value = null
   } catch (error) {
@@ -271,8 +277,7 @@ const openConfirmDelete = (product) => {
 
 const openCategoryEdit = (category) => {
   isNewCategory.value = true
-  categoryData.value = { ...category }
-  categoryData.value.isEdit = true
+  categoryData.value = { ...category, isEdit: true }
 }
 
 const openCategoryDelete = (category) => {
